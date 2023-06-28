@@ -1,61 +1,55 @@
-MODPATH=${0%/*}
-
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`realpath /dev/*/.magisk`
-fi
-
-# path
-VENDOR=`realpath $MAGISKTMP/mirror/vendor`
+[ -z $MODPATH ] && MODPATH=${0%/*}
+[ -z $API ] && API=`getprop ro.build.version.sdk`
 
 # destination
-if [ -d $VENDOR/lib/soundfx ]; then
+if [ "$API" -ge 26 ]; then
   LIBPATH="\/vendor\/lib\/soundfx"
 else
   LIBPATH="\/system\/lib\/soundfx"
 fi
-MODAEC=`find $MODPATH/system -type f -name *audio*effects*.conf`
-MODAEX=`find $MODPATH/system -type f -name *audio*effects*.xml`
+MODAEC=`find $MODPATH -type f -name *audio*effects*.conf`
+MODAEX=`find $MODPATH -type f -name *audio*effects*.xml`
 
 # function
 remove_conf() {
-for RMVS in $RMV; do
-  sed -i "s/$RMVS/removed/g" $MODAEC
+for RMV in $RMVS; do
+  sed -i "s|$RMV|removed|g" $MODAEC
 done
-sed -i 's/path \/vendor\/lib\/soundfx\/removed//g' $MODAEC
-sed -i 's/path \/system\/lib\/soundfx\/removed//g' $MODAEC
-sed -i 's/path \/vendor\/lib\/removed//g' $MODAEC
-sed -i 's/path \/system\/lib\/removed//g' $MODAEC
-sed -i 's/library removed//g' $MODAEC
-sed -i 's/uuid removed//g' $MODAEC
+sed -i 's|path /vendor/lib/soundfx/removed||g' $MODAEC
+sed -i 's|path /system/lib/soundfx/removed||g' $MODAEC
+sed -i 's|path /vendor/lib/removed||g' $MODAEC
+sed -i 's|path /system/lib/removed||g' $MODAEC
+sed -i 's|library removed||g' $MODAEC
+sed -i 's|uuid removed||g' $MODAEC
 sed -i "/^        removed {/ {;N s/        removed {\n        }//}" $MODAEC
+sed -i 's|removed { }||g' $MODAEC
+sed -i 's|removed {}||g' $MODAEC
 }
 remove_xml() {
-for RMVS in $RMV; do
-  sed -i "s/\"$RMVS\"/\"removed\"/g" $MODAEX
+for RMV in $RMVS; do
+  sed -i "s|\"$RMV\"|\"removed\"|g" $MODAEX
 done
-sed -i 's/<library name="removed" path="removed"\/>//g' $MODAEX
-sed -i 's/<library name="proxy" path="removed"\/>//g' $MODAEX
-sed -i 's/<effect name="removed" library="removed" uuid="removed"\/>//g' $MODAEX
-sed -i 's/<effect name="removed" uuid="removed" library="removed"\/>//g' $MODAEX
-sed -i 's/<libsw library="removed" uuid="removed"\/>//g' $MODAEX
-sed -i 's/<libhw library="removed" uuid="removed"\/>//g' $MODAEX
-sed -i 's/<apply effect="removed"\/>//g' $MODAEX
-sed -i 's/<library name="removed" path="removed" \/>//g' $MODAEX
-sed -i 's/<library name="proxy" path="removed" \/>//g' $MODAEX
-sed -i 's/<effect name="removed" library="removed" uuid="removed" \/>//g' $MODAEX
-sed -i 's/<effect name="removed" uuid="removed" library="removed" \/>//g' $MODAEX
-sed -i 's/<libsw library="removed" uuid="removed" \/>//g' $MODAEX
-sed -i 's/<libhw library="removed" uuid="removed" \/>//g' $MODAEX
-sed -i 's/<apply effect="removed" \/>//g' $MODAEX
+sed -i 's|<library name="removed" path="removed"/>||g' $MODAEX
+sed -i 's|<library name="proxy" path="removed"/>||g' $MODAEX
+sed -i 's|<effect name="removed" library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<effect name="removed" uuid="removed" library="removed"/>||g' $MODAEX
+sed -i 's|<libsw library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<libhw library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<apply effect="removed"/>||g' $MODAEX
+sed -i 's|<library name="removed" path="removed" />||g' $MODAEX
+sed -i 's|<library name="proxy" path="removed" />||g' $MODAEX
+sed -i 's|<effect name="removed" library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<effect name="removed" uuid="removed" library="removed" />||g' $MODAEX
+sed -i 's|<libsw library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<libhw library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<apply effect="removed" />||g' $MODAEX
 }
 
 # setup audio effects conf
 if [ "$MODAEC" ]; then
-  if ! grep -Eq '^pre_processing {' $MODAEC; then
+  if ! grep -q '^pre_processing {' $MODAEC; then
     sed -i -e '$a\
+\
 pre_processing {\
   mic {\
   }\
@@ -67,16 +61,16 @@ pre_processing {\
   }\
 }\' $MODAEC
   else
-    if ! grep -Eq '^  voice_communication {' $MODAEC; then
+    if ! grep -q '^  voice_communication {' $MODAEC; then
       sed -i "/^pre_processing {/a\  voice_communication {\n  }" $MODAEC
     fi
-    if ! grep -Eq '^  voice_recognition {' $MODAEC; then
+    if ! grep -q '^  voice_recognition {' $MODAEC; then
       sed -i "/^pre_processing {/a\  voice_recognition {\n  }" $MODAEC
     fi
-    if ! grep -Eq '^  camcorder {' $MODAEC; then
+    if ! grep -q '^  camcorder {' $MODAEC; then
       sed -i "/^pre_processing {/a\  camcorder {\n  }" $MODAEC
     fi
-    if ! grep -Eq '^  mic {' $MODAEC; then
+    if ! grep -q '^  mic {' $MODAEC; then
       sed -i "/^pre_processing {/a\  mic {\n  }" $MODAEC
     fi
   fi
@@ -84,7 +78,7 @@ fi
 
 # setup audio effects xml
 if [ "$MODAEX" ]; then
-  if ! grep -Eq '<preprocess>' $MODAEX; then
+  if ! grep -q '<preprocess>' $MODAEX; then
     sed -i '/<\/effects>/a\
     <preprocess>\
         <stream type="mic">\
@@ -97,16 +91,16 @@ if [ "$MODAEX" ]; then
         <\/stream>\
     <\/preprocess>' $MODAEX
   else
-    if ! grep -Eq '<stream type="voice_communication">' $MODAEX; then
+    if ! grep -q '<stream type="voice_communication">' $MODAEX; then
       sed -i "/<preprocess>/a\        <stream type=\"voice_communication\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="voice_recognition">' $MODAEX; then
+    if ! grep -q '<stream type="voice_recognition">' $MODAEX; then
       sed -i "/<preprocess>/a\        <stream type=\"voice_recognition\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="camcorder">' $MODAEX; then
+    if ! grep -q '<stream type="camcorder">' $MODAEX; then
       sed -i "/<preprocess>/a\        <stream type=\"camcorder\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="mic">' $MODAEX; then
+    if ! grep -q '<stream type="mic">' $MODAEX; then
       sed -i "/<preprocess>/a\        <stream type=\"mic\">\n        <\/stream>" $MODAEX
     fi
   fi
@@ -117,7 +111,7 @@ LIB=libznrwrapper.so
 LIBNAME=znrwrapper
 NAME=ZNR
 UUID=b8a031e0-6bbf-11e5-b9ef-0002a5d5c51b
-RMV="$LIB $LIBNAME $NAME $UUID"
+RMVS="$LIB $LIBNAME $NAME $UUID"
 
 # patch audio effects conf
 if [ "$MODAEC" ]; then
@@ -140,5 +134,11 @@ if [ "$MODAEX" ]; then
   sed -i "/<stream type=\"voice_recognition\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
   sed -i "/<stream type=\"voice_communication\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
 fi
+
+
+
+
+
+
 
 

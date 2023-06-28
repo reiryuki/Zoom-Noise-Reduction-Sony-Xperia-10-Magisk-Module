@@ -2,7 +2,7 @@
 
 ## DISCLAIMER
 - Sony blobs are owned by Sony™.
-- The MIT license specified here is for the Magisk Module, not for Sony blobs.
+- The MIT license specified here is for the Magisk Module only, not for Sony blobs.
 
 ## Descriptions
 - Audio quality enhancements for audio/video recordings ported from Sony Xperia 10 (I4113) and integrated as a Magisk Module for all supported and rooted devices with Magisk
@@ -13,10 +13,10 @@
 - https://dumps.tadiphone.dev/dumps/sony/i4113 kirin_dsds-user-10-53.1.A.2.2-053001A00020000200894138764-release-keys
 
 ## Requirements
-- Magisk installed
+- Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
-- Install this module https://www.pling.com/p/1944804/ via Magisk Manager or Recovery
+- Install this module https://www.pling.com/p/1944804/ via Magisk app or KernelSU app or Recovery if Magisk installed
 - Install AML Magisk Module https://t.me/androidryukimodsdiscussions/29836 only if using any other audio mod module
 - Reboot
 
