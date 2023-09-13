@@ -88,9 +88,10 @@ fi
 
 # directory
 if [ "$API" -le 25 ]; then
-  ui_print "- /vendor/lib/soundfx is not supported in SDK 25 and bellow"
-  ui_print "  Using /system/lib/soundfx instead"
-  mv -f $MODPATH/system/vendor/lib* $MODPATH/system
+  ui_print "- /vendor/lib*/soundfx is not supported in SDK 25 and bellow"
+  ui_print "  Using /system/lib*/soundfx instead"
+  cp -rf $MODPATH/system/vendor/lib* $MODPATH/system
+  rm -rf $MODPATH/system/vendor/lib*
   ui_print " "
 fi
 
