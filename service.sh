@@ -8,7 +8,7 @@ set -x
 API=`getprop ro.build.version.sdk`
 
 # prop
-resetprop ro.audio.ignore_effects false
+resetprop -n ro.audio.ignore_effects false
 
 # restart
 if [ "$API" -ge 24 ]; then
@@ -18,7 +18,7 @@ else
 fi
 PID=`pidof $SERVER`
 if [ "$PID" ]; then
-  killall $SERVER
+  killall $SERVER android.hardware.audio@4.0-service-mediatek
 fi
 
 # wait
@@ -67,6 +67,9 @@ if [ -d $AML ] && [ ! -f $AML/disable ]\
     done
   fi
 fi
+
+# audio flinger
+DMAF=`dumpsys media.audio_flinger`
 
 
 

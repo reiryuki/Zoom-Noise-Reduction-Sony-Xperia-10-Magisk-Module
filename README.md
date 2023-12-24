@@ -13,6 +13,7 @@
 - https://dumps.tadiphone.dev/dumps/sony/i4113 kirin_dsds-user-10-53.1.A.2.2-053001A00020000200894138764-release-keys
 
 ## Requirements
+- 32 bit architecture or 64 bit architecture with 32 bit library support
 - Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
@@ -21,10 +22,10 @@
 - Reboot
 
 ## Optionals & Troubleshootings
-- https://t.me/androidryukimodsdiscussions/29836
-- https://t.me/androidryukimodsdiscussions/60861
 - https://t.me/androidryukimodsdiscussions/25187
-- https://t.me/androidryukimodsdiscussions/26764
+- Global: https://t.me/androidryukimodsdiscussions/29836
+- Global: https://t.me/androidryukimodsdiscussions/60861
+- Stream: https://t.me/androidryukimodsdiscussions/26764
 
 ## Support & Bug Report
 - https://t.me/androidryukimodsdiscussions/2618
