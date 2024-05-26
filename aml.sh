@@ -9,8 +9,8 @@ if [ ! "$libdir" ]; then
     libdir=/system
   fi
 fi
-MODAEC=`find $MODPATH -type f -name *audio*effects*.conf`
-MODAEX=`find $MODPATH -type f -name *audio*effects*.xml`
+MODAECS=`find $MODPATH -type f -name *audio*effects*.conf`
+MODAEXS=`find $MODPATH -type f -name *audio*effects*.xml`
 
 # function
 archdir() {
@@ -18,8 +18,12 @@ if [ -f $libdir/lib/soundfx/$LIB ]\
 || [ -f $MODPATH/system$libdir/lib/soundfx/$LIB ]\
 || [ -f $MODPATH$libdir/lib/soundfx/$LIB ]; then
   ARCHDIR=/lib
-else
+elif [ -f $libdir/lib64/soundfx/$LIB ]\
+|| [ -f $MODPATH/system$libdir/lib64/soundfx/$LIB ]\
+|| [ -f $MODPATH$libdir/lib64/soundfx/$LIB ]; then
   ARCHDIR=/lib64
+else
+  unset ARCHDIR
 fi
 }
 remove_conf() {
@@ -61,9 +65,9 @@ sed -i 's|<apply effect="removed" />||g' $MODAEX
 }
 
 # setup audio effects conf
-if [ "$MODAEC" ]; then
+for MODAEC in $MODAECS; do
   if ! grep -q '^pre_processing {' $MODAEC; then
-    sed -i -e '$a\
+    sed -i '$a\
 \
 pre_processing {\
   mic {\
@@ -89,11 +93,12 @@ pre_processing {\
       sed -i "/^pre_processing {/a\  mic {\n  }" $MODAEC
     fi
   fi
-fi
+done
 
 # setup audio effects xml
-if [ "$MODAEX" ]; then
-  if ! grep -q '<preprocess>' $MODAEX; then
+for MODAEX in $MODAEXS; do
+  if ! grep -q '<preprocess>' $MODAEX\
+  || grep -q '<!-- Audio pre processor' $MODAEX; then
     sed -i '/<\/effects>/a\
     <preprocess>\
         <stream type="mic">\
@@ -119,36 +124,34 @@ if [ "$MODAEX" ]; then
       sed -i "/<preprocess>/a\        <stream type=\"mic\">\n        <\/stream>" $MODAEX
     fi
   fi
-fi
+done
 
-# store
+# patch audio effects
 LIB=libznrwrapper.so
 LIBNAME=znrwrapper
 NAME=ZNR
 UUID=b8a031e0-6bbf-11e5-b9ef-0002a5d5c51b
 RMVS="$LIB $LIBNAME $NAME $UUID"
 archdir
-
-# patch audio effects conf
-if [ "$MODAEC" ]; then
-  remove_conf
-  sed -i "/^libraries {/a\  $LIBNAME {\n    path \\$libdir\\$ARCHDIR\/soundfx\/$LIB\n  }" $MODAEC
-  sed -i "/^effects {/a\  $NAME {\n    library $LIBNAME\n    uuid $UUID\n  }" $MODAEC
-  sed -i "/^  camcorder {/a\    $NAME {\n    }" $MODAEC
-  sed -i "/^  mic {/a\    $NAME {\n    }" $MODAEC
-  sed -i "/^  voice_recognition {/a\    $NAME {\n    }" $MODAEC
-  sed -i "/^  voice_communication {/a\    $NAME {\n    }" $MODAEC
-fi
-
-# patch audio effects xml
-if [ "$MODAEX" ]; then
-  remove_xml
-  sed -i "/<libraries>/a\        <library name=\"$LIBNAME\" path=\"$LIB\"\/>" $MODAEX
-  sed -i "/<effects>/a\        <effect name=\"$NAME\" library=\"$LIBNAME\" uuid=\"$UUID\"\/>" $MODAEX
-  sed -i "/<stream type=\"camcorder\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
-  sed -i "/<stream type=\"mic\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
-  sed -i "/<stream type=\"voice_recognition\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
-  sed -i "/<stream type=\"voice_communication\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+if [ "$ARCHDIR" ]; then
+  for MODAEC in $MODAECS; do
+    remove_conf
+    sed -i "/^libraries {/a\  $LIBNAME {\n    path \\$libdir\\$ARCHDIR\/soundfx\/$LIB\n  }" $MODAEC
+    sed -i "/^effects {/a\  $NAME {\n    library $LIBNAME\n    uuid $UUID\n  }" $MODAEC
+    sed -i "/^  camcorder {/a\    $NAME {\n    }" $MODAEC
+    sed -i "/^  mic {/a\    $NAME {\n    }" $MODAEC
+    sed -i "/^  voice_recognition {/a\    $NAME {\n    }" $MODAEC
+    sed -i "/^  voice_communication {/a\    $NAME {\n    }" $MODAEC
+  done
+  for MODAEX in $MODAEXS; do
+    remove_xml
+    sed -i "/<libraries>/a\        <library name=\"$LIBNAME\" path=\"$LIB\"\/>" $MODAEX
+    sed -i "/<effects>/a\        <effect name=\"$NAME\" library=\"$LIBNAME\" uuid=\"$UUID\"\/>" $MODAEX
+    sed -i "/<stream type=\"camcorder\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+    sed -i "/<stream type=\"mic\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+    sed -i "/<stream type=\"voice_recognition\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+    sed -i "/<stream type=\"voice_communication\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+  done
 fi
 
 
