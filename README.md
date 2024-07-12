@@ -1,4 +1,4 @@
-# Zoom Noise Reduction Sony Xperia 10 Magisk Module
+# Zoom Noise Reduction Audio Sony Xperia 10 Magisk Module
 
 ## DISCLAIMER
 - Sony blobs are owned by Sony™.
@@ -6,14 +6,15 @@
 
 ## Descriptions
 - Audio quality enhancement for audio/video recordings ported from Sony Xperia 10 (I4113) and integrated as a Magisk Module for all supported and rooted devices with Magisk
-- Pre process type soundfx
+- Pre process type sound effect
 - There is no user interface
 
 ## Sources
 - https://dumps.tadiphone.dev/dumps/sony/i4113 kirin_dsds-user-10-53.1.A.2.2-053001A00020000200894138764-release-keys
+- libmagiskpolicy.so: Kitsune Mask R6687BB53
 
 ## Requirements
-- 32 bit architecture or 64 bit architecture with 32 bit library support
+- 32 bit audio service (this also can be found in 64 bit ROM with 32 bit support, not only 32 bit ROM)
 - Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
@@ -21,11 +22,11 @@
 - Install AML Magisk Module https://t.me/androidryukimodsdiscussions/29836 only if using any other else audio mod module
 - Reboot
 
-## Optionals & Troubleshootings
-- https://t.me/androidryukimodsdiscussions/25187
-- Global: https://t.me/androidryukimodsdiscussions/29836
+## Optionals
 - Global: https://t.me/androidryukimodsdiscussions/60861
-- Stream: https://t.me/androidryukimodsdiscussions/26764
+
+## Troubleshootings
+- Global: https://t.me/androidryukimodsdiscussions/29836
 
 ## Support & Bug Report
 - https://t.me/androidryukimodsdiscussions/2618

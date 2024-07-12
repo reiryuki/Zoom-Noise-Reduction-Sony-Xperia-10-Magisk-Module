@@ -56,20 +56,28 @@ else
 fi
 ui_print " "
 
+mount_partitions_in_recovery
+
 # bit
-if [ "$IS64BIT" == true ]; then
-  ui_print "- 64 bit architecture"
-  ui_print " "
-  # 32 bit
-  if [ "$LIST32BIT" ]; then
+AUDIO64BIT=`grep linker64 /*/bin/hw/*hardware*audio*`
+if [ "$LIST32BIT" ]; then
+  if [ "$IS64BIT" == true ]; then
+    ui_print "- 64 bit architecture"
+    ui_print " "
     ui_print "- 32 bit library support"
+    ui_print " "
   else
-    abort "! This ROM doesn't support 32 bit library."
+    ui_print "- 32 bit architecture"
+    rm -rf `find $MODPATH -type d -name *64*`
+    ui_print " "
   fi
-  ui_print " "
+  if [ "$AUDIO64BIT" ]; then
+    ui_print "! This module uses 32 bit audio service only"
+    ui_print "  But this ROM uses 64 bit audio service"
+    abort
+  fi
 else
-  ui_print "- 32 bit architecture"
-  ui_print " "
+  abort "! This ROM doesn't support 32 bit library"
 fi
 
 # sepolicy
