@@ -123,7 +123,6 @@ if [ "$KSU" == true ]; then
   ui_print " KSUVersion=$KSU_VER"
   ui_print " KSUVersionCode=$KSU_VER_CODE"
   ui_print " KSUKernelVersionCode=$KSU_KERNEL_VER_CODE"
-  sed -i 's|#k||g' $MODPATH/post-fs-data.sh
 else
   ui_print " MagiskVersion=$MAGISK_VER"
   ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
@@ -160,14 +159,6 @@ if ! file /*/bin/hw/*hardware*audio* | grep -q 32-bit; then
   ui_print "! This module uses 32 bit audio service only"
   ui_print "  But this ROM uses 64 bit audio service"
   abort
-fi
-
-# sepolicy
-FILE=$MODPATH/sepolicy.rule
-DES=$MODPATH/sepolicy.pfsd
-if [ "`grep_prop sepolicy.sh $OPTIONALS`" == 1 ]\
-&& [ -f $FILE ]; then
-  mv -f $FILE $DES
 fi
 
 # .aml.sh

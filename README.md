@@ -11,7 +11,6 @@
 
 ## Sources
 - https://dumps.tadiphone.dev/dumps/sony/i4113 kirin_dsds-user-10-53.1.A.2.2-053001A00020000200894138764-release-keys
-- libmagiskpolicy.so: Kitsune Mask R6687BB53
 
 ## Requirements
 - armeabi-v7a or arm64-v8a architecture
