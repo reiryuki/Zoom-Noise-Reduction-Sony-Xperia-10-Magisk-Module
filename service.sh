@@ -17,7 +17,8 @@ else
   SERVER=mediaserver
 fi
 killall $SERVER\
- android.hardware.audio@4.0-service-mediatek
+ android.hardware.audio@4.0-service-mediatek\
+ android.hardware.audio.service
 
 # wait
 sleep 20
@@ -65,9 +66,6 @@ if [ -d $AML ] && [ ! -f $AML/disable ]\
     done
   fi
 fi
-
-# audio flinger
-#DMAF=`dumpsys media.audio_flinger`
 
 
 

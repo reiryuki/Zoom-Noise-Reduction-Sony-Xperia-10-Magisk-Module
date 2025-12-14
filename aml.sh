@@ -43,6 +43,7 @@ sed -i 's|uuid removed||g' $MODAEC
 sed -i "/^        removed {/ {;N s/        removed {\n        }//}" $MODAEC
 sed -i 's|removed { }||g' $MODAEC
 sed -i 's|removed {}||g' $MODAEC
+sed -i '/^[[:space:]]*$/d' $MODAEC
 }
 remove_xml() {
 for RMV in $RMVS; do
@@ -62,6 +63,7 @@ sed -i 's|<effect name="removed" uuid="removed" library="removed" />||g' $MODAEX
 sed -i 's|<libsw library="removed" uuid="removed" />||g' $MODAEX
 sed -i 's|<libhw library="removed" uuid="removed" />||g' $MODAEX
 sed -i 's|<apply effect="removed" />||g' $MODAEX
+sed -i '/^[[:space:]]*$/d' $MODAEX
 }
 
 # setup audio effects conf
@@ -98,7 +100,7 @@ done
 # setup audio effects xml
 for MODAEX in $MODAEXS; do
   if ! grep -q '<preprocess>' $MODAEX\
-  || grep -q '<!-- Audio pre processor' $MODAEX; then
+  || grep -q 'Audio pre processor configurations' $MODAEX; then
     sed -i '/<\/effects>/a\
     <preprocess>\
         <stream type="mic">\
@@ -124,6 +126,7 @@ for MODAEX in $MODAEXS; do
       sed -i "/<preprocess>/a\        <stream type=\"mic\">\n        <\/stream>" $MODAEX
     fi
   fi
+  sed -i 's|Audio pre processor configurations|Ryuki Mod Edit|g' $MODAEX
 done
 
 # patch audio effects
