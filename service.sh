@@ -11,6 +11,9 @@ if [ ! -d $MODPATH/vendor ]\
   MODSYSTEM=/system
 fi
 
+# prop
+resetprop -n ro.audio.ignore_effects false
+
 # restart
 if [ "$API" -ge 24 ]; then
   SERVER=audioserver
@@ -57,7 +60,6 @@ if [ -d $AML ] && [ ! -f $AML/disable ]\
     done
   fi
 fi
-
 
 
 

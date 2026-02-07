@@ -1,8 +1,8 @@
-id=VolumeBooster
-name=Volume Booster
-version=v0.9
-versionCode=9
+id=ZNR
+name=Zoom Noise Reduction Audio Sony Xperia 10
+version=v1.1
+versionCode=11
 author=Rei Ryuki the Fixer
-description=Increases maximum phone volumes.
+description=Pre process type sound effect ported from Sony Xperia 10 (I4113) for any Android version, armeabi-v7a or arm64-v8a architecture. Enhances audio quality in audio/video recordings.
 
 

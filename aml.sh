@@ -1,188 +1,162 @@
 [ ! "$MODPATH" ] && MODPATH=${0%/*}
+[ ! "$API" ] && API=`getprop ro.build.version.sdk`
 
 # destination
-MODMPS=`find $MODPATH -type f -name *mixer*paths*.xml`
-
-# patch mixer paths
-for MODMP in $MODMPS; do
-  if ! grep -q '"RX9 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX9 Digital Volume" value="100" />' $MODMP
+if [ ! "$libdir" ]; then
+  if [ "$API" -ge 26 ]; then
+    libdir=/vendor
   else
-    ROWS=`grep '"RX9 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX9 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX9 Digital Volume\" value=\"$ROW\"|\"RX9 Digital Volume\" value=\"100\"|g" $MODMP
-    done
+    libdir=/system
   fi
-  if ! grep -q '"RX8 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX8 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX8 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX8 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX8 Digital Volume\" value=\"$ROW\"|\"RX8 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX7 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX7 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX7 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX7 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX7 Digital Volume\" value=\"$ROW\"|\"RX7 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX6 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX6 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX6 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX6 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX6 Digital Volume\" value=\"$ROW\"|\"RX6 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX5 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX5 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX5 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX5 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX5 Digital Volume\" value=\"$ROW\"|\"RX5 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX4 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX4 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX4 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX4 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX4 Digital Volume\" value=\"$ROW\"|\"RX4 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX3 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX3 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX3 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX3 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX3 Digital Volume\" value=\"$ROW\"|\"RX3 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX2 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX2 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX2 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX2 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX2 Digital Volume\" value=\"$ROW\"|\"RX2 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX1 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX1 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX1 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX1 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX1 Digital Volume\" value=\"$ROW\"|\"RX1 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX0 Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX0 Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX0 Digital Volume"' $MODMP | sed -e 's|<ctl name="RX0 Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX0 Digital Volume\" value=\"$ROW\"|\"RX0 Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-done
+fi
+MODAECS=`find $MODPATH -type f -name *audio*effects*.conf`
+MODAEXS=`find $MODPATH -type f -name *audio*effects*.xml`
 
 # function
-patch_mix() {
-for MODMP in $MODMPS; do
-  if ! grep -q '"RX8 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX8 Mix Digital Volume" value="100" />' $MODMP
+archdir() {
+if [ -f $libdir/lib/soundfx/$LIB ]\
+|| [ -f $MODPATH/system$libdir/lib/soundfx/$LIB ]\
+|| [ -f $MODPATH$libdir/lib/soundfx/$LIB ]; then
+  ARCHDIR=/lib
+elif [ -f $libdir/lib64/soundfx/$LIB ]\
+|| [ -f $MODPATH/system$libdir/lib64/soundfx/$LIB ]\
+|| [ -f $MODPATH$libdir/lib64/soundfx/$LIB ]; then
+  ARCHDIR=/lib64
+else
+  unset ARCHDIR
+fi
+}
+remove_conf() {
+for RMV in $RMVS; do
+  sed -i "s|$RMV|removed|g" $MODAEC
+done
+sed -i 's|path /vendor/lib/soundfx/removed||g' $MODAEC
+sed -i 's|path /system/lib/soundfx/removed||g' $MODAEC
+sed -i 's|path /vendor/lib/removed||g' $MODAEC
+sed -i 's|path /system/lib/removed||g' $MODAEC
+sed -i 's|path /vendor/lib64/soundfx/removed||g' $MODAEC
+sed -i 's|path /system/lib64/soundfx/removed||g' $MODAEC
+sed -i 's|path /vendor/lib64/removed||g' $MODAEC
+sed -i 's|path /system/lib64/removed||g' $MODAEC
+sed -i 's|library removed||g' $MODAEC
+sed -i 's|uuid removed||g' $MODAEC
+sed -i "/^        removed {/ {;N s/        removed {\n        }//}" $MODAEC
+sed -i 's|removed { }||g' $MODAEC
+sed -i 's|removed {}||g' $MODAEC
+sed -i '/^[[:space:]]*$/d' $MODAEC
+}
+remove_xml() {
+for RMV in $RMVS; do
+  sed -i "s|\"$RMV\"|\"removed\"|g" $MODAEX
+done
+sed -i 's|<library name="removed" path="removed"/>||g' $MODAEX
+sed -i 's|<library name="proxy" path="removed"/>||g' $MODAEX
+sed -i 's|<effect name="removed" library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<effect name="removed" uuid="removed" library="removed"/>||g' $MODAEX
+sed -i 's|<libsw library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<libhw library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<apply effect="removed"/>||g' $MODAEX
+sed -i 's|<library name="removed" path="removed" />||g' $MODAEX
+sed -i 's|<library name="proxy" path="removed" />||g' $MODAEX
+sed -i 's|<effect name="removed" library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<effect name="removed" uuid="removed" library="removed" />||g' $MODAEX
+sed -i 's|<libsw library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<libhw library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<apply effect="removed" />||g' $MODAEX
+sed -i '/^[[:space:]]*$/d' $MODAEX
+}
+
+# setup audio effects conf
+for MODAEC in $MODAECS; do
+  if ! grep -q '^pre_processing {' $MODAEC; then
+    sed -i '$a\
+\
+pre_processing {\
+  mic {\
+  }\
+  camcorder {\
+  }\
+  voice_recognition {\
+  }\
+  voice_communication {\
+  }\
+}\' $MODAEC
   else
-    ROWS=`grep '"RX8 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX8 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX8 Mix Digital Volume\" value=\"$ROW\"|\"RX8 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX7 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX7 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX7 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX7 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX7 Mix Digital Volume\" value=\"$ROW\"|\"RX7 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX6 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX6 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX6 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX6 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX6 Mix Digital Volume\" value=\"$ROW\"|\"RX6 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX5 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX5 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX5 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX5 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX5 Mix Digital Volume\" value=\"$ROW\"|\"RX5 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX4 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX4 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX4 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX4 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX4 Mix Digital Volume\" value=\"$ROW\"|\"RX4 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX3 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX3 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX3 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX3 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX3 Mix Digital Volume\" value=\"$ROW\"|\"RX3 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX2 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX2 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX2 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX2 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX2 Mix Digital Volume\" value=\"$ROW\"|\"RX2 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX1 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX1 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX1 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX1 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX1 Mix Digital Volume\" value=\"$ROW\"|\"RX1 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
-  fi
-  if ! grep -q '"RX0 Mix Digital Volume"' $MODMP; then
-    sed -i '/<mixer>/a\
-    <ctl name="RX0 Mix Digital Volume" value="100" />' $MODMP
-  else
-    ROWS=`grep '"RX0 Mix Digital Volume"' $MODMP | sed -e 's|<ctl name="RX0 Mix Digital Volume" value="||g' -e 's|" />||g' -e 's|"/>||g'`
-    for ROW in $ROWS; do
-      sed -i "s|\"RX0 Mix Digital Volume\" value=\"$ROW\"|\"RX0 Mix Digital Volume\" value=\"100\"|g" $MODMP
-    done
+    if ! grep -q '^  voice_communication {' $MODAEC; then
+      sed -i "/^pre_processing {/a\  voice_communication {\n  }" $MODAEC
+    fi
+    if ! grep -q '^  voice_recognition {' $MODAEC; then
+      sed -i "/^pre_processing {/a\  voice_recognition {\n  }" $MODAEC
+    fi
+    if ! grep -q '^  camcorder {' $MODAEC; then
+      sed -i "/^pre_processing {/a\  camcorder {\n  }" $MODAEC
+    fi
+    if ! grep -q '^  mic {' $MODAEC; then
+      sed -i "/^pre_processing {/a\  mic {\n  }" $MODAEC
+    fi
   fi
 done
-}
+
+# setup audio effects xml
+for MODAEX in $MODAEXS; do
+  if ! grep -q '<preprocess>' $MODAEX\
+  || grep -q 'Audio pre processor configurations' $MODAEX; then
+    sed -i '/<\/effects>/a\
+    <preprocess>\
+        <stream type="mic">\
+        <\/stream>\
+        <stream type="camcorder">\
+        <\/stream>\
+        <stream type="voice_recognition">\
+        <\/stream>\
+        <stream type="voice_communication">\
+        <\/stream>\
+    <\/preprocess>' $MODAEX
+  else
+    if ! grep -q '<stream type="voice_communication">' $MODAEX; then
+      sed -i "/<preprocess>/a\        <stream type=\"voice_communication\">\n        <\/stream>" $MODAEX
+    fi
+    if ! grep -q '<stream type="voice_recognition">' $MODAEX; then
+      sed -i "/<preprocess>/a\        <stream type=\"voice_recognition\">\n        <\/stream>" $MODAEX
+    fi
+    if ! grep -q '<stream type="camcorder">' $MODAEX; then
+      sed -i "/<preprocess>/a\        <stream type=\"camcorder\">\n        <\/stream>" $MODAEX
+    fi
+    if ! grep -q '<stream type="mic">' $MODAEX; then
+      sed -i "/<preprocess>/a\        <stream type=\"mic\">\n        <\/stream>" $MODAEX
+    fi
+  fi
+  sed -i 's|Audio pre processor configurations|Ryuki Mod Edit|g' $MODAEX
+done
+
+# patch audio effects
+LIB=libznrwrapper.so
+LIBNAME=znrwrapper
+NAME=ZNR
+UUID=b8a031e0-6bbf-11e5-b9ef-0002a5d5c51b
+RMVS="$LIB $LIBNAME $NAME $UUID"
+archdir
+if [ "$ARCHDIR" ]; then
+  for MODAEC in $MODAECS; do
+    remove_conf
+    sed -i "/^libraries {/a\  $LIBNAME {\n    path \\$libdir\\$ARCHDIR\/soundfx\/$LIB\n  }" $MODAEC
+    sed -i "/^effects {/a\  $NAME {\n    library $LIBNAME\n    uuid $UUID\n  }" $MODAEC
+    sed -i "/^  camcorder {/a\    $NAME {\n    }" $MODAEC
+    sed -i "/^  mic {/a\    $NAME {\n    }" $MODAEC
+    sed -i "/^  voice_recognition {/a\    $NAME {\n    }" $MODAEC
+    sed -i "/^  voice_communication {/a\    $NAME {\n    }" $MODAEC
+  done
+  for MODAEX in $MODAEXS; do
+    remove_xml
+    sed -i "/<libraries>/a\        <library name=\"$LIBNAME\" path=\"$LIB\"\/>" $MODAEX
+    sed -i "/<effects>/a\        <effect name=\"$NAME\" library=\"$LIBNAME\" uuid=\"$UUID\"\/>" $MODAEX
+    sed -i "/<stream type=\"camcorder\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+    sed -i "/<stream type=\"mic\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+    sed -i "/<stream type=\"voice_recognition\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+    sed -i "/<stream type=\"voice_communication\">/a\            <apply effect=\"$NAME\"\/>" $MODAEX
+  done
+fi
+
 
 
 

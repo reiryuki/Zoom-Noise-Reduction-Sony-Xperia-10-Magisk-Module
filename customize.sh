@@ -4,6 +4,83 @@ ui_print " "
 # var
 UID=`id -u`
 [ ! "$UID" ] && UID=0
+FIRARCH=`grep_get_prop ro.bionic.arch`
+SECARCH=`grep_get_prop ro.bionic.2nd_arch`
+ABILIST=`grep_get_prop ro.product.cpu.abilist`
+if [ ! "$ABILIST" ]; then
+  ABILIST=`grep_get_prop ro.system.product.cpu.abilist`
+fi
+if [ "$FIRARCH" == arm64 ]\
+&& ! echo "$ABILIST" | grep -q arm64-v8a; then
+  if [ "$ABILIST" ]; then
+    ABILIST="$ABILIST,arm64-v8a"
+  else
+    ABILIST=arm64-v8a
+  fi
+fi
+if [ "$FIRARCH" == x64 ]\
+&& ! echo "$ABILIST" | grep -q x86_64; then
+  if [ "$ABILIST" ]; then
+    ABILIST="$ABILIST,x86_64"
+  else
+    ABILIST=x86_64
+  fi
+fi
+if [ "$SECARCH" == arm ]\
+&& ! echo "$ABILIST" | grep -q armeabi; then
+  if [ "$ABILIST" ]; then
+    ABILIST="$ABILIST,armeabi"
+  else
+    ABILIST=armeabi
+  fi
+fi
+if [ "$SECARCH" == arm ]\
+&& ! echo "$ABILIST" | grep -q armeabi-v7a; then
+  if [ "$ABILIST" ]; then
+    ABILIST="$ABILIST,armeabi-v7a"
+  else
+    ABILIST=armeabi-v7a
+  fi
+fi
+if [ "$SECARCH" == x86 ]\
+&& ! echo "$ABILIST" | grep -q x86; then
+  if [ "$ABILIST" ]; then
+    ABILIST="$ABILIST,x86"
+  else
+    ABILIST=x86
+  fi
+fi
+ABILIST32=`grep_get_prop ro.product.cpu.abilist32`
+if [ ! "$ABILIST32" ]; then
+  ABILIST32=`grep_get_prop ro.system.product.cpu.abilist32`
+fi
+if [ "$SECARCH" == arm ]\
+&& ! echo "$ABILIST32" | grep -q armeabi; then
+  if [ "$ABILIST32" ]; then
+    ABILIST32="$ABILIST32,armeabi"
+  else
+    ABILIST32=armeabi
+  fi
+fi
+if [ "$SECARCH" == arm ]\
+&& ! echo "$ABILIST32" | grep -q armeabi-v7a; then
+  if [ "$ABILIST32" ]; then
+    ABILIST32="$ABILIST32,armeabi-v7a"
+  else
+    ABILIST32=armeabi-v7a
+  fi
+fi
+if [ "$SECARCH" == x86 ]\
+&& ! echo "$ABILIST32" | grep -q x86; then
+  if [ "$ABILIST32" ]; then
+    ABILIST32="$ABILIST32,x86"
+  else
+    ABILIST32=x86
+  fi
+fi
+if [ ! "$ABILIST32" ]; then
+  [ -f /system/lib/libandroid.so ] && ABILIST32=true
+fi
 
 # log
 if [ "$BOOTMODE" != true ]; then
@@ -52,6 +129,38 @@ else
 fi
 ui_print " "
 
+mount_partitions_in_recovery
+
+# architecture
+if [ "$ABILIST" ]; then
+  ui_print "- $ABILIST architecture"
+  ui_print " "
+fi
+NAME=arm64-v8a
+NAME2=armeabi-v7a
+if ! echo "$ABILIST" | grep -q $NAME; then
+  rm -rf `find $MODPATH/system -type d -name *64*`
+  if [ "$BOOTMODE" != true ]; then
+    ui_print "! This Recovery doesn't support $NAME architecture"
+    ui_print "  Try to install via Magisk app instead"
+    ui_print " "
+  fi
+fi
+if ! echo "$ABILIST" | grep -q $NAME2; then
+  if [ "$BOOTMODE" == true ]; then
+    abort "! This ROM doesn't support $NAME2 architecture"
+  else
+    ui_print "! This Recovery doesn't support $NAME2 architecture"
+    ui_print "  Try to install via Magisk app instead"
+    abort
+  fi
+fi
+if ! file /*/bin/hw/*audio* | grep -q 32-bit; then
+  ui_print "! This module uses 32 bit audio service only"
+  ui_print "  But this ROM uses 64 bit audio service"
+  abort
+fi
+
 # .aml.sh
 mv -f $MODPATH/aml.sh $MODPATH/.aml.sh
 
@@ -60,15 +169,40 @@ ui_print "- Cleaning..."
 remove_sepolicy_rule
 ui_print " "
 
-# volume
-FILE=$MODPATH/.aml.sh
-PROP=`grep_prop volume.boost $OPTIONALS`
-if [ "$PROP" ]; then
-  ui_print "- Boosts phone volumes to $PROP"
-  sed -i "s|100|$PROP|g" $FILE
+# function
+cleanup() {
+if [ -f $DIR/uninstall.sh ]; then
+  sh $DIR/uninstall.sh
+fi
+DIR=/data/adb/modules_update/$MODID
+if [ -f $DIR/uninstall.sh ]; then
+  sh $DIR/uninstall.sh
+fi
+}
+
+# cleanup
+DIR=/data/adb/modules/$MODID
+FILE=$DIR/module.prop
+PREVMODNAME=`grep_prop name $FILE`
+if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
+  sed -i 's|^data.cleanup=1|data.cleanup=0|g' $OPTIONALS
+  ui_print "- Cleaning-up $MODID data..."
+  cleanup
   ui_print " "
-else
-  ui_print "- Boosts phone volumes to 100"
+elif [ -d $DIR ]\
+&& [ "$PREVMODNAME" != "$MODNAME" ]; then
+  ui_print "- Different module name is detected"
+  ui_print "  Cleaning-up $MODID data..."
+  cleanup
+  ui_print " "
+fi
+
+# directory
+if [ "$API" -le 25 ]; then
+  ui_print "- /vendor/lib*/soundfx is not supported in SDK 25 and bellow"
+  ui_print "  Using /system/lib*/soundfx instead"
+  cp -rf $MODPATH/system/vendor/lib* $MODPATH/system
+  rm -rf $MODPATH/system/vendor/lib*
   ui_print " "
 fi
 
@@ -76,8 +210,6 @@ fi
 MODSYSTEM=/system
 . $MODPATH/copy.sh
 . $MODPATH/.aml.sh
-
-
 
 
 
