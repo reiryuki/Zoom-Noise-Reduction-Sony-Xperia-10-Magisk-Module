@@ -8,6 +8,10 @@ set -x
 # var
 API=`getprop ro.build.version.sdk`
 ABI=`getprop ro.product.cpu.abi`
+if [ ! -d $MODPATH/vendor ]\
+|| [ -L $MODPATH/vendor ]; then
+  MODSYSTEM=/system
+fi
 
 # run
 . $MODPATH/copy.sh
@@ -20,28 +24,10 @@ if [ "$API" -ge 26 ]; then
   for DIR in $DIRS; do
     chown 0.2000 $DIR
   done
-  chcon -R u:object_r:system_lib_file:s0 $MODPATH/system/lib*
   chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/system/odm/etc
-  if [ -L $MODPATH/system/vendor ]\
-  && [ -d $MODPATH/vendor ]; then
-    FILES=`find $MODPATH/vendor/lib* -type f`
-    for FILE in $FILES; do
-      chmod 0644 $FILE
-      chown 0.0 $FILE
-    done
-    chcon -R u:object_r:vendor_file:s0 $MODPATH/vendor
-    chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/vendor/etc
-    chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/vendor/odm/etc
-  else
-    FILES=`find $MODPATH/system/vendor/lib* -type f`
-    for FILE in $FILES; do
-      chmod 0644 $FILE
-      chown 0.0 $FILE
-    done
-    chcon -R u:object_r:vendor_file:s0 $MODPATH/system/vendor
-    chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/system/vendor/etc
-    chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/system/vendor/odm/etc
-  fi
+  chcon -R u:object_r:vendor_file:s0 $MODPATH$MODSYSTEM/vendor
+  chcon -R u:object_r:vendor_configs_file:s0 $MODPATH$MODSYSTEM/vendor/etc
+  chcon -R u:object_r:vendor_configs_file:s0 $MODPATH$MODSYSTEM/vendor/odm/etc
 fi
 
 # function
@@ -82,12 +68,7 @@ if [ -d /my_product ]\
   mount_my_product
 fi
 
-# cleaning
-FILE=$MODPATH/cleaner.sh
-if [ -f $FILE ]; then
-  . $FILE
-  mv -f $FILE $FILE.txt
-fi
+
 
 
 
